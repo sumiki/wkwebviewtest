@@ -118,13 +118,66 @@ class ViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler {
                             
                             let appversion = "バージョン:\(version)-\(build)-\(identifier)"
                             Debug.debugPrint(appversion)
-                            doJavascript(webView: webView ,javaScript:"alert('\(appversion)');")
+                            doJavascript(webView: webView ,javaScript:"SetVersion('\(appversion)');")
                             
                         }
                     }
                 }
             }
         }
+        
+    }
+    
+    //MARK: - WKUIDelegate 新しいウィンドウやフレームを指定してコンテンツが開かれようとしているときに呼ばれる。
+    func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: (@escaping () -> Void))
+    {
+        
+        Debug.debugPrint("webView:\(webView) runJavaScriptAlertPanelWithMessage:\(message) initiatedByFrame:\(frame) completionHandler:\(completionHandler)")
+        
+        let alertController = UIAlertController(title: frame.request.url?.host, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+            completionHandler()
+        }))
+        self.present(alertController, animated: true, completion: nil)
+        
+    }
+    
+    //MARK: - WKUIDelegate 新しいウィンドウやフレームを指定してコンテンツが開かれようとしているときに呼ばれる。
+    func webView(_ webView: WKWebView, runJavaScriptConfirmPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: (@escaping (Bool) -> Void))
+    {
+        
+        Debug.debugPrint("webView:\(webView) runJavaScriptConfirmPanelWithMessage:\(message) initiatedByFrame:\(frame) completionHandler:\(completionHandler)")
+        
+        let alertController = UIAlertController(title: frame.request.url?.host, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { action in
+            completionHandler(false)
+        }))
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+            completionHandler(true)
+        }))
+        self.present(alertController, animated: true, completion: nil)
+        
+    }
+    
+    //MARK: - WKUIDelegate 新しいウィンドウやフレームを指定してコンテンツが開かれようとしているときに呼ばれる。
+    func webView(_ webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping (String?) -> Void) {
+        
+        Debug.debugPrint("webView:\(webView) runJavaScriptTextInputPanelWithPrompt:\(prompt) defaultText:\(String(describing: defaultText)) initiatedByFrame:\(frame) completionHandler:\(completionHandler)")
+        
+        let alertController = UIAlertController(title: frame.request.url?.host, message: prompt, preferredStyle: .alert)
+        weak var alertTextField: UITextField!
+        alertController.addTextField { textField in
+            textField.text = defaultText
+            alertTextField = textField
+        }
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { action in
+            completionHandler(nil)
+        }))
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+            completionHandler(alertTextField.text)
+        }))
+        self.present(alertController, animated: true, completion: nil)
+        
     }
     
 }
