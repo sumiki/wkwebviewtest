@@ -97,7 +97,7 @@ class ViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler {
             if let dictarray = message.body as? Array<AnyObject>
             {
                 
-                //Debug.debugPrint("dictarray.count:\(dictarray.count)")
+                Debug.debugPrint("dictarray.count:\(dictarray)")
                 
                 for i in 0..<dictarray.count
                 {
@@ -106,8 +106,11 @@ class ViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler {
                     {
                         
                         let transaction = dict["transaction"] as! String
+                        let callback = dict["callback"] as! String
                         
+                        Debug.debugPrint("dict \(dict)")
                         Debug.debugPrint("transaction \(transaction)")
+
                         
                         if transaction == "getversion"
                         {
@@ -118,7 +121,7 @@ class ViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler {
                             
                             let appversion = "バージョン:\(version)-\(build)-\(identifier)"
                             Debug.debugPrint(appversion)
-                            doJavascript(webView: webView ,javaScript:"SetVersion('\(appversion)');")
+                            doJavascript(webView: webView ,javaScript:"\(callback)('\(appversion)');")
                             
                         }
                     }
