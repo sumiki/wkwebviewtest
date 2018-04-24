@@ -59,6 +59,7 @@ class ViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler {
         webView = WKWebView(frame: .zero, configuration: webConfiguration)
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.allowsBackForwardNavigationGestures = true
+        webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         webView.uiDelegate = self
         view = webView
         
